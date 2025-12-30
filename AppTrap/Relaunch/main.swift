@@ -12,17 +12,18 @@ class Observer: NSObject
 {
     private let callback: () -> Void
     
-    private init(callback: () -> Void)
+    // Swift 4+ `private` is type-scoped; this must be callable from this file.
+    fileprivate init(callback: @escaping () -> Void)
     {
         self.callback = callback
         super.init()
     }
     
-    override func observeValueForKeyPath(
-        keyPath: String?,
-        ofObject object: AnyObject?,
-        change: [String : AnyObject]?,
-        context: UnsafeMutablePointer<Void>)
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?)
     {
         callback()
     }
@@ -32,25 +33,27 @@ class Observer: NSObject
 autoreleasepool
 {
     // get the application instance
-    if let parentPID = Int32(Process.arguments[1]),
-        app = NSRunningApplication(processIdentifier: parentPID),
-        bundleURL = app.bundleURL
+    let args = CommandLine.arguments
+    if args.count > 1,
+       let parentPID = Int32(args[1]),
+       let app = NSRunningApplication(processIdentifier: parentPID),
+       let bundleURL = app.bundleURL
     {
         // terminate() and wait terminated.
         let listener = Observer { CFRunLoopStop(CFRunLoopGetCurrent()) }
         app.addObserver(
             listener,
-            forKeyPath: "isTerminated",
-            options: NSKeyValueObservingOptions(rawValue: 0),
+            forKeyPath: #keyPath(NSRunningApplication.isTerminated),
+            options: [],
             context: nil)
         app.terminate()
         CFRunLoopRun() // wait KVO notification
-        app.removeObserver(listener, forKeyPath: "isTerminated", context: nil)
+        app.removeObserver(listener, forKeyPath: #keyPath(NSRunningApplication.isTerminated), context: nil)
         
         // relaunch
-        try! NSWorkspace.sharedWorkspace().launchApplicationAtURL(
-            bundleURL,
-            options: .Default,
+        _ = try NSWorkspace.shared.launchApplication(
+            at: bundleURL,
+            options: [.default],
             configuration: [:])
     }
 }
