@@ -26,7 +26,8 @@
 static NSString *AppTrapBackgroundBundleIdentifier = @"com.KumaranVijayan.AppTrap";
 static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasaker.AppTrap";
 
-@interface ATPreferencePane () <SUUpdaterDelegate>
+@interface ATPreferencePane ()
+- (void)updateStartOnLoginButton;
 @end
 
 @implementation ATPreferencePane
@@ -40,23 +41,14 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
     appPath = [[self bundle] pathForResource:@"AppTrap" ofType:@"app"];
 	NSLog(@"appPath: %@", appPath);
 	
-	[automaticallyCheckForUpdate setState:[[ATSUUpdater sharedUpdater] automaticallyChecksForUpdates]];
+	[automaticallyCheckForUpdate setState:[[ATSUUpdater sharedUpdater] automaticallyChecksForUpdates] ? NSControlStateValueOn : NSControlStateValueOff];
 
     // Restart AppTrap in case the user just updated to a new version
     // TODO: Check AppTrap's version against the prefpane version and only restart if they differ
     // TODO: Leave this off for now, something goes haywire on startup
     /*if ([self appTrapIsRunning])
         [self launchAppTrap];*/
-	CFURLRef appPathURL = (CFURLRef)CFBridgingRetain([appPath copy]);
-
-    // Check if application is in login items
-    if ([self inLoginItems:LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL) forPath:appPathURL]) {
-		[startOnLoginButton setState:NSOnState];
-	} else {
-		[startOnLoginButton setState:NSOffState];
-	}
-	
-	CFRelease(appPathURL);
+	[self updateStartOnLoginButton];
     
     // Display read me file
     [aboutView readRTFDFromFile:[[self bundle] pathForResource:@"Read Me" ofType:@"rtf"]];
@@ -105,16 +97,20 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 	int prefpaneVersionInt = [prefpaneVersion intValue];
 	
 	if (prefpaneVersionInt != backgroundProcessVersionInt) {
-		NSBeginAlertSheet(@"AppTrap",
-						  NSLocalizedStringFromTableInBundle(@"Restart AppTrap", nil, [self bundle], @""),
-						  NSLocalizedStringFromTableInBundle(@"Don't restart AppTrap", nil, [self bundle], @""),
-						  nil,
-						  [startStopButton window], 
-						  self,
-						  @selector(sheetDidEnd:returnCode:contextInfo:), 
-						  nil,
-						  nil,
-						  NSLocalizedStringFromTableInBundle(@"The background process is an older version. Would you like to restart it with the newer version?", nil, [self bundle], @""));
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"AppTrap"];
+        [alert setInformativeText:NSLocalizedStringFromTableInBundle(@"The background process is an older version. Would you like to restart it with the newer version?", nil, [self bundle], @"")];
+        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart AppTrap", nil, [self bundle], @"")];
+        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Don't restart AppTrap", nil, [self bundle], @"")];
+        [alert beginSheetModalForWindow:[startStopButton window] completionHandler:^(NSModalResponse returnCode) {
+            if (returnCode == NSAlertFirstButtonReturn) {
+                [startStopButton setEnabled:NO];
+                [restartingAppTrapIndicator startAnimation:nil];
+                [restartingAppTrapTextField setHidden:NO];
+                [self terminateAppTrap];
+                [self performSelector:@selector(restartWithNewVersion) withObject:nil afterDelay:5];
+            }
+        }];
 	}
 }
 
@@ -127,16 +123,6 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 		  deliverImmediately:YES];
 }
 
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo {
-	if (returnCode == NSAlertDefaultReturn) {
-		[startStopButton setEnabled:NO];
-		[restartingAppTrapIndicator startAnimation:nil];
-		[restartingAppTrapTextField setHidden:NO];
-		[self terminateAppTrap];
-		[self performSelector:@selector(restartWithNewVersion) withObject:nil afterDelay:5];
-	}
-}
-
 - (void)restartWithNewVersion {
 	[self launchAppTrap];
 	[restartingAppTrapIndicator stopAnimation:nil];
@@ -146,15 +132,7 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 
 - (void)didSelect
 {
-	CFURLRef appPathURL = (CFURLRef)CFBridgingRetain([appPath copy]);
-	
-	if ([self inLoginItems:LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL) 
-				   forPath:appPathURL]) {
-		[startOnLoginButton setState:NSOnState];
-	} else {
-		[startOnLoginButton setState:NSOffState];
-	}
-	CFRelease(appPathURL);
+	[self updateStartOnLoginButton];
 	
     [self updateStatus];
 	[self checkBackgroundProcessVersion];
@@ -186,16 +164,16 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
     // Try to launch AppTrap
 	NSLog(@"launching AppTrap");
 	NSURL *appURL = [NSURL fileURLWithPath:appPath];
-	unsigned options = NSWorkspaceLaunchWithoutAddingToRecents | NSWorkspaceLaunchWithoutActivation | NSWorkspaceLaunchAsync;
-    
-	BOOL launched = [[NSWorkspace sharedWorkspace] openURLs:@[appURL]
-                                    withAppBundleIdentifier:nil
-                                                    options:options
-                             additionalEventParamDescriptor:nil
-                                          launchIdentifiers:NULL];
-    
-    if (!launched)
-        NSLog(@"Couldn't launch AppTrap!");
+    NSWorkspaceOpenConfiguration *configuration = [NSWorkspaceOpenConfiguration configuration];
+    [configuration setAddsToRecentItems:NO];
+    [configuration setActivates:NO];
+    [[NSWorkspace sharedWorkspace] openApplicationAtURL:appURL
+                                          configuration:configuration
+                                      completionHandler:^(NSRunningApplication *application, NSError *error) {
+        if (error) {
+            NSLog(@"Couldn't launch AppTrap: %@", error);
+        }
+    }];
 }
 
 - (void)terminateAppTrap
@@ -225,12 +203,12 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 #pragma mark -
 #pragma mark Update check
 
-- (SUUpdater*)updater {
-	return [SUUpdater updaterForBundle:[NSBundle bundleForClass:[self class]]];
+- (id)updater {
+	return [ATSUUpdater sharedUpdater];
 }
 
 - (IBAction)automaticallyCheckForUpdate:(id)sender {
-	[[ATSUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:[sender state]];
+	[[ATSUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:([sender state] == NSControlStateValueOn)];
 }
 
 - (IBAction)checkForUpdate:(id)sender {
@@ -239,17 +217,36 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 
 #pragma mark -
 #pragma mark Login items
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+- (void)updateStartOnLoginButton
+{
+    CFURLRef appPathURL = (__bridge CFURLRef)[NSURL fileURLWithPath:appPath];
+    LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    BOOL isInLoginItems = NO;
+    if (loginItems) {
+        isInLoginItems = [self inLoginItems:loginItems forPath:appPathURL];
+        CFRelease(loginItems);
+    }
+    [startOnLoginButton setState:isInLoginItems ? NSControlStateValueOn : NSControlStateValueOff];
+}
 - (BOOL)inLoginItems:(LSSharedFileListRef)theLoginItemsRefs forPath:(CFURLRef)thePath
 {
+	if (!theLoginItemsRefs || !thePath) {
+		return NO;
+	}
+
 	UInt32 seedValue;
-	
-	// We're going to grab the contents of the shared file list (LSSharedFileListItemRef objects)
-	// and pop it in an array so we can iterate through it to find our item.
-	NSArray  *loginItemsArray = (NSArray *)CFBridgingRelease(LSSharedFileListCopySnapshot(theLoginItemsRefs, &seedValue));
-	for (id item in loginItemsArray) {		
+	NSArray *loginItemsArray = (NSArray *)CFBridgingRelease(LSSharedFileListCopySnapshot(theLoginItemsRefs, &seedValue));
+	for (id item in loginItemsArray) {
 		LSSharedFileListItemRef itemRef = (__bridge LSSharedFileListItemRef)item;
-		if (LSSharedFileListItemResolve(itemRef, 0, (CFURLRef*) &thePath, NULL) == noErr) {
-			if ([[(__bridge NSURL *)thePath path] hasPrefix:appPath]) {
+		CFURLRef itemURL = NULL;
+		if (LSSharedFileListItemResolve(itemRef, 0, &itemURL, NULL) == noErr && itemURL) {
+			NSString *itemPath = [(__bridge NSURL *)itemURL path];
+			CFRelease(itemURL);
+			if ([itemPath hasPrefix:appPath]) {
 				return YES;
 			}
 		}
@@ -260,6 +257,9 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 
 - (void)addToLoginItems:(LSSharedFileListRef )theLoginItemsRefs forPath:(CFURLRef)thePath
 {
+	if (!theLoginItemsRefs || !thePath) {
+		return;
+	}
 	LSSharedFileListItemRef item = LSSharedFileListInsertItemURL(theLoginItemsRefs, kLSSharedFileListItemLast, NULL, NULL, thePath, NULL, NULL);		
 	if (item) {
 		CFRelease(item);
@@ -268,16 +268,21 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 
 - (void)removeFromLoginItems:(LSSharedFileListRef )theLoginItemsRefs forPath:(CFURLRef)thePath
 {
+	if (!theLoginItemsRefs || !thePath) {
+		return;
+	}
+
 	UInt32 seedValue;
-	
-	// We're going to grab the contents of the shared file list (LSSharedFileListItemRef objects)
-	// and pop it in an array so we can iterate through it to find our item.
-	NSArray  *loginItemsArray = (NSArray *)CFBridgingRelease(LSSharedFileListCopySnapshot(theLoginItemsRefs, &seedValue));
-	for (id item in loginItemsArray) {		
+	NSArray *loginItemsArray = (NSArray *)CFBridgingRelease(LSSharedFileListCopySnapshot(theLoginItemsRefs, &seedValue));
+	for (id item in loginItemsArray) {
 		LSSharedFileListItemRef itemRef = (__bridge LSSharedFileListItemRef)item;
-		if (LSSharedFileListItemResolve(itemRef, 0, (CFURLRef*) &thePath, NULL) == noErr) {
-			if ([[(__bridge NSURL *)thePath path] hasPrefix:appPath])
-				LSSharedFileListItemRemove(theLoginItemsRefs, itemRef); // Deleting the item
+		CFURLRef itemURL = NULL;
+		if (LSSharedFileListItemResolve(itemRef, 0, &itemURL, NULL) == noErr && itemURL) {
+			NSString *itemPath = [(__bridge NSURL *)itemURL path];
+			CFRelease(itemURL);
+			if ([itemPath hasPrefix:appPath]) {
+				LSSharedFileListItemRemove(theLoginItemsRefs, itemRef);
+			}
 		}
 	}
 	
@@ -300,8 +305,11 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 {
 	CFURLRef appPathURL = (__bridge CFURLRef)[NSURL fileURLWithPath:appPath];
 	LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    if (!loginItems) {
+        return;
+    }
 
-    if ([sender state] == NSOnState) {
+    if ([sender state] == NSControlStateValueOn) {
         [self addToLoginItems:loginItems forPath:appPathURL];
 	} else {
         [self removeFromLoginItems:loginItems forPath:appPathURL];
@@ -309,6 +317,8 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 	
     CFRelease(loginItems);
 }
+
+#pragma clang diagnostic pop
 
 - (IBAction)visitWebsite:(id)sender
 {

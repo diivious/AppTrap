@@ -22,11 +22,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Sparkle/Sparkle.h>
 
-@interface ATSUUpdater : SUUpdater
-{
+@interface ATSUUpdater : NSObject
 
-}
-
-+(SUUpdater*)sharedUpdater;
++ (id)sharedUpdater;
 
 @end

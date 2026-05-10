@@ -1,0 +1,16 @@
+BUILDING ON CURRENT macOS / APPLE SILICON
+
+1. Open AppTrap.xcworkspace in Xcode.
+2. Select the AppTrap scheme to build and run the background app.
+3. Select the AppTrapPreferencePane scheme to build the preference pane.
+
+CLI build:
+
+    ./build_macos_m1.sh
+
+Notes:
+
+- Deployment target is now macOS 13.0 or newer.
+- The old x86_64-only bundled Sparkle framework was removed.
+- The old LSSharedFileList login item code was replaced with a user LaunchAgent plist in ~/Library/LaunchAgents.
+- The update-check UI is disabled because the old Sparkle 1.x framework could not run natively on Apple Silicon.

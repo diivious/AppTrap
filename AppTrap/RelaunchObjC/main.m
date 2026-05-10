@@ -9,11 +9,11 @@
 #import <AppKit/AppKit.h>
 
 @interface Observer: NSObject
-@property (nonatomic, copy) void (^callback)();
-- (instancetype)initWithCallback:(void (^)())callback;
+@property (nonatomic, copy) void (^callback)(void);
+- (instancetype)initWithCallback:(void (^)(void))callback;
 @end
 @implementation Observer
-- (instancetype)initWithCallback:(void (^)())callback {
+- (instancetype)initWithCallback:(void (^)(void))callback {
     self = [super init];
     if (self) {
         _callback = callback;
@@ -42,10 +42,17 @@ int main(int argc, const char * argv[]) {
         CFRunLoopRun();
         [app removeObserver:listener forKeyPath:@"isTerminated"];
         
-        [[NSWorkspace sharedWorkspace] launchApplicationAtURL:bundleURL
-                                                      options:NSWorkspaceLaunchDefault
-                                                configuration:[NSDictionary new]
-                                                        error:nil];
+        NSWorkspaceOpenConfiguration *configuration = [NSWorkspaceOpenConfiguration configuration];
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+        [[NSWorkspace sharedWorkspace] openApplicationAtURL:bundleURL
+                                              configuration:configuration
+                                          completionHandler:^(__unused NSRunningApplication * _Nullable runningApplication,
+                                                              __unused NSError * _Nullable error) {
+            dispatch_semaphore_signal(semaphore);
+        }];
+
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     }
     return 0;
 }

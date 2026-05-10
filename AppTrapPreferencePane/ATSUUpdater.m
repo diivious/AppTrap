@@ -21,12 +21,16 @@
 
 #import "ATSUUpdater.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 @implementation ATSUUpdater
 
-+(SUUpdater*)sharedUpdater
++ (id)sharedUpdater
 {
-	return [self updaterForBundle:[NSBundle bundleForClass:[self class]]];
+    return [SUUpdater updaterForBundle:[NSBundle bundleForClass:[self class]]];
 }
 
 @end
+
+#pragma clang diagnostic pop
