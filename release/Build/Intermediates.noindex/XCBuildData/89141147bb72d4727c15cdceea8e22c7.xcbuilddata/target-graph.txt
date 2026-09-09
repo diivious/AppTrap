@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+Target 'AppTrap' in project 'AppTrapPreferencePane'
+➜ Explicit dependency on target 'AppTrap' in project 'AppTrap'
+Target 'AppTrap' in project 'AppTrap'
+➜ Explicit dependency on target 'RelaunchObjC' in project 'AppTrap'
+Target 'RelaunchObjC' in project 'AppTrap' (no dependencies)

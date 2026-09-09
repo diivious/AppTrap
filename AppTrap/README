@@ -1,16 +1,22 @@
-BUILDING ON CURRENT macOS / APPLE SILICON
+APPTRAP 2.0
 
-1. Open AppTrap.xcworkspace in Xcode.
-2. Select the AppTrap scheme to build and run the background app.
-3. Select the AppTrapPreferencePane scheme to build the preference pane.
+Current Developer
+Donnie Savage (@diivious)
+https://github.com/diivious/AppTrap
 
-CLI build:
+Project history
+- Creator: Markus Amalthea Magnuson
+- Intel Version Developer: Kumaran Vijayan
+- Current 2.0 Developer: Donnie Savage (@diivious)
 
-    ./build_macos_m1.sh
+The original AppTrap authorship, contributor credits, source headers, copyright,
+and license are preserved. AppTrap 2.0 is the currently maintained version in
+the diivious/AppTrap repository.
 
-Notes:
+BUILDING
 
-- Deployment target is now macOS 13.0 or newer.
-- The old x86_64-only bundled Sparkle framework was removed.
-- The old LSSharedFileList login item code was replaced with a user LaunchAgent plist in ~/Library/LaunchAgents.
-- The update-check UI is disabled because the old Sparkle 1.x framework could not run natively on Apple Silicon.
+Validation/test build:
+    ./build.sh
+
+Release preference pane:
+    ./build.sh --release

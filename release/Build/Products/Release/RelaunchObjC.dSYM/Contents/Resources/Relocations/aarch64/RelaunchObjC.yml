@@ -1,0 +1,16 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/diivious/Projects/AppTrap/release/Build/Products/Release/RelaunchObjC'
+relocations:
+  - { offset: 0xCE22C, size: 0x8, addend: 0x0, symName: '-[Observer initWithCallback:]', symObjAddr: 0x0, symBinAddr: 0x100000B08, symSize: 0x78 }
+  - { offset: 0xCE2DB, size: 0x8, addend: 0x0, symName: '-[Observer initWithCallback:]', symObjAddr: 0x0, symBinAddr: 0x100000B08, symSize: 0x78 }
+  - { offset: 0xCE322, size: 0x8, addend: 0x0, symName: '-[Observer observeValueForKeyPath:ofObject:change:context:]', symObjAddr: 0x78, symBinAddr: 0x100000B80, symSize: 0x34 }
+  - { offset: 0xCE391, size: 0x8, addend: 0x0, symName: '-[Observer callback]', symObjAddr: 0xAC, symBinAddr: 0x100000BB4, symSize: 0x8 }
+  - { offset: 0xCE3C8, size: 0x8, addend: 0x0, symName: '-[Observer setCallback:]', symObjAddr: 0xB4, symBinAddr: 0x100000BBC, symSize: 0x8 }
+  - { offset: 0xCE407, size: 0x8, addend: 0x0, symName: '-[Observer .cxx_destruct]', symObjAddr: 0xBC, symBinAddr: 0x100000BC4, symSize: 0xC }
+  - { offset: 0xCE43A, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0xC8, symBinAddr: 0x100000BD0, symSize: 0x1A8 }
+  - { offset: 0xCE58D, size: 0x8, addend: 0x0, symName: ___main_block_invoke, symObjAddr: 0x270, symBinAddr: 0x100000D78, symSize: 0x14 }
+  - { offset: 0xCE5EA, size: 0x8, addend: 0x0, symName: ___main_block_invoke_2, symObjAddr: 0x284, symBinAddr: 0x100000D8C, symSize: 0x8 }
+  - { offset: 0xCE65D, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32s, symObjAddr: 0x28C, symBinAddr: 0x100000D94, symSize: 0x8 }
+  - { offset: 0xCE684, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32s, symObjAddr: 0x294, symBinAddr: 0x100000D9C, symSize: 0x8 }
+...

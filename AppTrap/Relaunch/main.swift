@@ -51,9 +51,11 @@ autoreleasepool
         app.removeObserver(listener, forKeyPath: #keyPath(NSRunningApplication.isTerminated), context: nil)
         
         // relaunch
-        _ = try NSWorkspace.shared.launchApplication(
-            at: bundleURL,
-            options: [.default],
-            configuration: [:])
+        let configuration = NSWorkspace.OpenConfiguration()
+        NSWorkspace.shared.openApplication(at: bundleURL, configuration: configuration) { _, error in
+            if let error {
+                NSLog("Could not relaunch AppTrap: \(error.localizedDescription)")
+            }
+        }
     }
 }

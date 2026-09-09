@@ -40,16 +40,16 @@
 - (void)testPathToTrash
 {
 	NSString *pathToTrash = self.controller.pathToTrash;
-	STAssertNotNil(pathToTrash, @"");
+	XCTAssertNotNil(pathToTrash, @"");
 	NSString *trash = pathToTrash.lastPathComponent;
-	STAssertEqualObjects(trash, @".Trash", @"");
+	XCTAssertEqualObjects(trash, @".Trash", @"");
 }
 
 - (void)testLibraryPaths
 {
 	NSArray *libraryPaths = self.controller.libraryPaths;
-	STAssertNotNil(libraryPaths, @"");
-	STAssertTrue(libraryPaths.count > 0, @"");
+	XCTAssertNotNil(libraryPaths, @"");
+	XCTAssertTrue(libraryPaths.count > 0, @"");
 }
 
 @end

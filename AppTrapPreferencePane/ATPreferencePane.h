@@ -19,133 +19,35 @@
 */
 
 #import <PreferencePanes/PreferencePanes.h>
-#import "ATSUUpdater.h"
 
 /**
  * The main controller class for the preference pane. Handles all of the logic.
  */
-@interface ATPreferencePane : NSPreferencePane 
+@interface ATPreferencePane : NSPreferencePane
 {
     NSString *appPath;
-    
+
     IBOutlet NSTextField *statusText;
     IBOutlet NSButton *startStopButton;
     IBOutlet NSButton *startOnLoginButton;
-	IBOutlet NSButton *automaticallyCheckForUpdate;
+    IBOutlet NSButton *automaticallyCheckForUpdate;
     IBOutlet NSTextView *aboutView;
-	IBOutlet NSProgressIndicator *restartingAppTrapIndicator;
-	IBOutlet NSTextField *restartingAppTrapTextField;
-	IBOutlet NSWindow *appTrapRestartWindow;
+    IBOutlet NSProgressIndicator *restartingAppTrapIndicator;
+    IBOutlet NSTextField *restartingAppTrapTextField;
+    IBOutlet NSWindow *appTrapRestartWindow;
 }
 
-/**
- * Check to see if AppTrap is running and update the user interface accordingly.
- */
 - (void)updateStatus;
-
-/**
- * Launch the AppTrap background process.
- */
 - (void)launchAppTrap;
-
-/**
- * Terminate the AppTrap background process. Sends a notification that the
- * background process receives.
- */
 - (void)terminateAppTrap;
-
-/**
- * Returns a BOOL indicating whether AppTrap is running or not.
- *
- * @return the BOOL indicating whether AppTrap is running.
- */
 - (BOOL)appTrapIsRunning;
-
-/**
- * Method called by the NSDistributedNotificationCenter on behalf of the
- * background process. Checks the background process version in the userInfo
- * dictionary in notification and opens an appropriate alert sheet if the
- * background process version is different from the preference pane version.
- *
- * @param[in] notification The NSNotification that invoked this method.
- */
 - (void)checkBackgroundProcessVersion:(NSNotification*)notification;
-
-/**
- * Send a notification to the background process asking for its version number.
- */
 - (void)checkBackgroundProcessVersion;
 
-/**
- * Check to see if the application referenced by thePath is in the user's list
- * of login items.
- *
- * @param[in] theLoginItemsRefs The list of the user's login items.
- * @param[in] thePath The URL to the application in question.
- * @return a BOOL indicating whether the application referenced by thePath is in
- * the user's list of login items.
- * @todo Modify this method, or make a new one, that gets the login items on its
- * own (without a parameter).
- */
-- (BOOL)inLoginItems:(LSSharedFileListRef)theLoginItemsRefs forPath:(CFURLRef)thePath;
-
-/**
- * Add the application referenced by thePath to the list of user's login items.
- *
- * @param[in] theLginItemsRefs The list of user's login items.
- * @param[in] thePath The URL to the application to be added.
- * @todo Modify this method, or make a new one, that gets the login items on its
- * own (without a parameter).
- */
-- (void)addToLoginItems:(LSSharedFileListRef )theLoginItemsRefs forPath:(CFURLRef)thePath;
-
-/**
- * Remove the application referenced by thePath from the list of user's login
- * items.
- *
- * @param[in] theLoginItemsRefs The list of user's login items.
- * @param[in] thePath The URL to the application to be added to the list of
- * login items.
- * @todo Modify this method, or make a new one, that gets the login items on its
- * own (without a parameter).
- */
-- (void)removeFromLoginItems:(LSSharedFileListRef )theLoginItemsRefs forPath:(CFURLRef)thePath;
-
-/**
- * Enable or disable automatic update checking, depending on the sender's state.
- * Called by a checkbox.
- *
- * @param[in] sender The control that invoked this method (likely a checkbox).
- */
 - (IBAction)automaticallyCheckForUpdate:(id)sender;
-
-/**
- * Check if there is an update. Called by a button.
- *
- * @param[in] sender The control that invoked this method (likely a button).
- */
 - (IBAction)checkForUpdate:(id)sender;
-
-/**
- * Start or stop the AppTrap background process. Called by a button.
- *
- * @param[in] sender The control that invoked this method (likely a button).
- */
 - (IBAction)startStopAppTrap:(id)sender;
-
-/**
- * Add or remove the AppTrap background process from the user's login items,
- * depending on the state of sender. Called by a checkbox.
- *
- * @param[in] sender The control that invoked this method (likely a checkbox).
- */
 - (IBAction)startOnLogin:(id)sender;
-
-/**
- * Open the AppTrap website in the user's default browser. Called by a button.
- *
- * @param[in] sender The control that invoked this method (likely a checkbox).
- */
 - (IBAction)visitWebsite:(id)sender;
 
 @end

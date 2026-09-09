@@ -200,7 +200,6 @@ static CGFloat SmallHeight = 177.0;
 		isExpanded = NO;
 	}
 	[[NSUserDefaults standardUserDefaults] setBool:isExpanded forKey:ATPreferencesIsExpanded];
-	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark - APTApplicationControllerDelegate Method
@@ -210,7 +209,17 @@ static CGFloat SmallHeight = 177.0;
 	if (files.count > 0)
 	{
 		[self.arrayController addPathsForDeletion:files];
-		[NSApp activateIgnoringOtherApps:YES];
+		if (@available(macOS 14.0, *))
+    {
+        [NSApp activate];
+    }
+    else
+    {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        [NSApp activateIgnoringOtherApps:YES];
+#pragma clang diagnostic pop
+    }
 		[NSApp runModalForWindow:self.mainWindow];
 	}
 }

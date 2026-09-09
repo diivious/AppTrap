@@ -4,25 +4,21 @@
 //
 //  Created by Kumaran Vijayan on 2013-05-08.
 //
-//
 
 #import "APTFSEventsWatcher.h"
 
 static CFTimeInterval kEventStreamLatency = 3.0;
+
+void eventStreamCallback(ConstFSEventStreamRef streamRef, void *clientCallBackInfo, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]);
 
 @interface APTFSEventsWatcher ()
 {
     BOOL _watching;
 }
 
-@property (nonatomic) FSEventStreamRef eventStream;
-@property (nonatomic) CFRunLoopRef runLoop;
-
-void eventStreamCallback(ConstFSEventStreamRef streamRef, void *clientCallBackInfo, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]);
+@property (nonatomic, assign) FSEventStreamRef eventStream;
 
 @end
-
-
 
 @implementation APTFSEventsWatcher
 
@@ -33,21 +29,16 @@ void eventStreamCallback(ConstFSEventStreamRef streamRef, void *clientCallBackIn
     self = [super init];
     if (self)
     {
-        if (!directoryPath)
+        if (directoryPath.length == 0)
         {
             [NSException raise:NSInvalidArgumentException format:@"directoryPath must be a valid NSString."];
         }
-        
+
         _watching = NO;
 
-        FSEventStreamContext eventStreamContext;
-        eventStreamContext.info = (__bridge void*)self;
-        eventStreamContext.version = 0;
-        eventStreamContext.release = NULL;
-        eventStreamContext.retain = NULL;
-        eventStreamContext.copyDescription = NULL;
-        
-        
+        FSEventStreamContext eventStreamContext = {0};
+        eventStreamContext.info = (__bridge void *)self;
+
         FSEventStreamRef eventStream = FSEventStreamCreate(kCFAllocatorDefault,
                                                            &eventStreamCallback,
                                                            &eventStreamContext,
@@ -55,11 +46,13 @@ void eventStreamCallback(ConstFSEventStreamRef streamRef, void *clientCallBackIn
                                                            kFSEventStreamEventIdSinceNow,
                                                            kEventStreamLatency,
                                                            kFSEventStreamCreateFlagUseCFTypes);
-        [self setEventStream:eventStream];
-		[self setRunLoop:CFRunLoopGetCurrent()];
-		FSEventStreamScheduleWithRunLoop(self.eventStream,
-										 CFRunLoopGetCurrent(),
-										 kCFRunLoopDefaultMode);
+        if (eventStream == NULL)
+        {
+            return nil;
+        }
+
+        self.eventStream = eventStream;
+        FSEventStreamSetDispatchQueue(self.eventStream, dispatch_get_main_queue());
     }
     return self;
 }
@@ -73,38 +66,56 @@ void eventStreamCallback(ConstFSEventStreamRef streamRef, void *clientCallBackIn
 
 - (void)startWatching
 {
-    FSEventStreamStart(self.eventStream);
-    _watching = YES;
+    if (self.eventStream != NULL && !_watching)
+    {
+        _watching = FSEventStreamStart(self.eventStream);
+    }
 }
 
 - (void)stopWatching
 {
-    FSEventStreamStop(self.eventStream);
-    _watching = NO;
+    if (self.eventStream != NULL && _watching)
+    {
+        FSEventStreamStop(self.eventStream);
+        _watching = NO;
+    }
 }
 
 #pragma mark - FSEventStream Callback
 
-void eventStreamCallback(ConstFSEventStreamRef streamRef,
+void eventStreamCallback(__unused ConstFSEventStreamRef streamRef,
                          void *clientCallBackInfo,
                          size_t numEvents,
                          void *eventPaths,
-                         const FSEventStreamEventFlags eventFlags[],
-                         const FSEventStreamEventId eventIds[])
+                         __unused const FSEventStreamEventFlags eventFlags[],
+                         __unused const FSEventStreamEventId eventIds[])
 {
-    APTFSEventsWatcher *watcher = (__bridge APTFSEventsWatcher*)clientCallBackInfo;
-    NSArray *paths = (__bridge NSArray*)eventPaths;
-    [watcher.delegate eventsWatcher:watcher observedChangesInDirectoryPath:paths[0]];
+    if (clientCallBackInfo == NULL || numEvents == 0 || eventPaths == NULL)
+    {
+        return;
+    }
+
+    APTFSEventsWatcher *watcher = (__bridge APTFSEventsWatcher *)clientCallBackInfo;
+    NSArray<NSString *> *paths = (__bridge NSArray *)eventPaths;
+    NSString *path = paths.firstObject;
+    if (path.length > 0 && watcher.delegate != nil)
+    {
+        [watcher.delegate eventsWatcher:watcher observedChangesInDirectoryPath:path];
+    }
 }
 
 #pragma mark - Memory Management
 
 - (void)dealloc
 {
-	FSEventStreamStop(self.eventStream);
-    FSEventStreamUnscheduleFromRunLoop(self.eventStream, self.runLoop, kCFRunLoopDefaultMode);
-    FSEventStreamInvalidate(self.eventStream);
-    FSEventStreamRelease(self.eventStream);
+    if (self.eventStream != NULL)
+    {
+        FSEventStreamStop(self.eventStream);
+        FSEventStreamSetDispatchQueue(self.eventStream, NULL);
+        FSEventStreamInvalidate(self.eventStream);
+        FSEventStreamRelease(self.eventStream);
+        self.eventStream = NULL;
+    }
 }
 
 @end

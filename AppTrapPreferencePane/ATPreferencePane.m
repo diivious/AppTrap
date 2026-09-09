@@ -21,155 +21,158 @@
 #import "ATPreferencePane.h"
 #import "ATNotifications.h"
 #import "ATVariables.h"
-//#import "UKLoginItemRegistry.h"
 
-static NSString *AppTrapBackgroundBundleIdentifier = @"com.KumaranVijayan.AppTrap";
-static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasaker.AppTrap";
+#import <unistd.h>
+
+static NSString *const AppTrapBackgroundBundleIdentifier = @"com.KumaranVijayan.AppTrap";
+static NSString *const AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasaker.AppTrap";
+static NSString *const AppTrapLaunchAgentLabel = @"com.KumaranVijayan.AppTrap";
+static NSString *const AppTrapLaunchAgentFileName = @"com.KumaranVijayan.AppTrap.plist";
 
 @interface ATPreferencePane ()
-- (void)updateStartOnLoginButton;
+- (void)refreshStartOnLoginButton;
+- (BOOL)isStartOnLoginEnabled;
+- (BOOL)writeLaunchAgentPlist;
+- (void)removeLaunchAgentPlist;
+- (void)bootstrapLaunchAgentIfPossible;
+- (void)bootoutLaunchAgentIfPossible;
+- (BOOL)runLaunchCtlWithArguments:(NSArray<NSString *> *)arguments;
+- (NSString *)launchAgentPlistPath;
+- (NSString *)launchctlGuiDomain;
 @end
 
 @implementation ATPreferencePane
 
 - (void)mainViewDidLoad
 {
-	[[ATSUUpdater sharedUpdater] resetUpdateCycle];
-	[[ATSUUpdater sharedUpdater] setDelegate:self];
-		
-    // Setup the application path
     appPath = [[self bundle] pathForResource:@"AppTrap" ofType:@"app"];
-	NSLog(@"appPath: %@", appPath);
-	
-	[automaticallyCheckForUpdate setState:[[ATSUUpdater sharedUpdater] automaticallyChecksForUpdates] ? NSControlStateValueOn : NSControlStateValueOff];
+    NSLog(@"appPath: %@", appPath);
 
-    // Restart AppTrap in case the user just updated to a new version
-    // TODO: Check AppTrap's version against the prefpane version and only restart if they differ
-    // TODO: Leave this off for now, something goes haywire on startup
-    /*if ([self appTrapIsRunning])
-        [self launchAppTrap];*/
-	[self updateStartOnLoginButton];
-    
-    // Display read me file
+    [automaticallyCheckForUpdate setState:NSControlStateValueOff];
+    [automaticallyCheckForUpdate setEnabled:NO];
+
+    [self refreshStartOnLoginButton];
+
     [aboutView readRTFDFromFile:[[self bundle] pathForResource:@"Read Me" ofType:@"rtf"]];
-    // Replace the {APPTRAP_VERSION} symbol with the version number
     NSRange versionSymbolRange = [[aboutView string] rangeOfString:@"{APPTRAP_VERSION}"];
-    if (versionSymbolRange.location != NSNotFound){
-        [[aboutView textStorage] replaceCharactersInRange:versionSymbolRange withString:[[self bundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
-	}
+    if (versionSymbolRange.location != NSNotFound) {
+        [[aboutView textStorage] replaceCharactersInRange:versionSymbolRange
+                                                withString:[[self bundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
+    }
 
-    // Register for notifications from AppTrap
     NSDistributedNotificationCenter *nc = [NSDistributedNotificationCenter defaultCenter];
-    
+
     [nc addObserver:self
            selector:@selector(updateStatus)
                name:ATApplicationFinishedLaunchingNotification
              object:nil
  suspensionBehavior:NSNotificationSuspensionBehaviorDeliverImmediately];
-    
+
     [nc addObserver:self
            selector:@selector(updateStatus)
                name:ATApplicationTerminatedNotification
              object:nil
  suspensionBehavior:NSNotificationSuspensionBehaviorDeliverImmediately];
-	
-	[nc addObserver:self
-		   selector:@selector(checkBackgroundProcessVersion:) 
-			   name:ATApplicationGetVersionData 
-			 object:nil 
+
+    [nc addObserver:self
+           selector:@selector(checkBackgroundProcessVersion:)
+               name:ATApplicationGetVersionData
+             object:nil
  suspensionBehavior:NSNotificationSuspensionBehaviorDeliverImmediately];
-	
-	[nc postNotificationName:ATApplicationSendVersionData 
-					  object:nil 
-					userInfo:nil 
-		  deliverImmediately:YES];	
-}
 
-- (void)checkBackgroundProcessVersion:(NSNotification*)notification {
-	NSLog(@"checkBackgroundProcessVersion");
-	NSLog(@"notification: %@", [notification description]);
-	NSLog(@"notification userInfo class: %@", [[notification userInfo] className]);
-	NSLog(@"notification userInfo: %@", [[notification userInfo] description]);
-	
-	NSString *backgroundProcessVersion = [notification userInfo][ATBackgroundProcessVersion];
-	int backgroundProcessVersionInt = [backgroundProcessVersion intValue];
-	NSString *prefpaneVersion = [[self bundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-	int prefpaneVersionInt = [prefpaneVersion intValue];
-	
-	if (prefpaneVersionInt != backgroundProcessVersionInt) {
-        NSAlert *alert = [[NSAlert alloc] init];
-        [alert setMessageText:@"AppTrap"];
-        [alert setInformativeText:NSLocalizedStringFromTableInBundle(@"The background process is an older version. Would you like to restart it with the newer version?", nil, [self bundle], @"")];
-        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart AppTrap", nil, [self bundle], @"")];
-        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Don't restart AppTrap", nil, [self bundle], @"")];
-        [alert beginSheetModalForWindow:[startStopButton window] completionHandler:^(NSModalResponse returnCode) {
-            if (returnCode == NSAlertFirstButtonReturn) {
-                [startStopButton setEnabled:NO];
-                [restartingAppTrapIndicator startAnimation:nil];
-                [restartingAppTrapTextField setHidden:NO];
-                [self terminateAppTrap];
-                [self performSelector:@selector(restartWithNewVersion) withObject:nil afterDelay:5];
-            }
-        }];
-	}
-}
-
-- (void)checkBackgroundProcessVersion {
-	NSDistributedNotificationCenter *nc = [NSDistributedNotificationCenter defaultCenter];
-	
-	[nc postNotificationName:ATApplicationSendVersionData
-					  object:nil
-					userInfo:nil
-		  deliverImmediately:YES];
-}
-
-- (void)restartWithNewVersion {
-	[self launchAppTrap];
-	[restartingAppTrapIndicator stopAnimation:nil];
-	[restartingAppTrapTextField setHidden:YES];
-	[startStopButton setEnabled:YES];
+    [nc postNotificationName:ATApplicationSendVersionData
+                      object:nil
+                    userInfo:nil
+          deliverImmediately:YES];
 }
 
 - (void)didSelect
 {
-	[self updateStartOnLoginButton];
-	
+    [self refreshStartOnLoginButton];
     [self updateStatus];
-	[self checkBackgroundProcessVersion];
+    [self checkBackgroundProcessVersion];
+}
+
+- (void)checkBackgroundProcessVersion:(NSNotification*)notification
+{
+    NSString *backgroundProcessVersion = notification.userInfo[ATBackgroundProcessVersion];
+    NSString *prefpaneVersion = [[self bundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+
+    if (!backgroundProcessVersion || !prefpaneVersion) {
+        return;
+    }
+
+    if (backgroundProcessVersion.integerValue == prefpaneVersion.integerValue) {
+        return;
+    }
+
+    NSAlert *alert = [NSAlert new];
+    alert.messageText = @"AppTrap";
+    alert.informativeText = NSLocalizedStringFromTableInBundle(@"The background process is an older version. Would you like to restart it with the newer version?", nil, [self bundle], @"");
+    [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart AppTrap", nil, [self bundle], @"")];
+    [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Don't restart AppTrap", nil, [self bundle], @"")];
+
+    [alert beginSheetModalForWindow:[startStopButton window]
+                  completionHandler:^(NSModalResponse returnCode) {
+        if (returnCode == NSAlertFirstButtonReturn) {
+            [startStopButton setEnabled:NO];
+            [restartingAppTrapIndicator startAnimation:nil];
+            [restartingAppTrapTextField setHidden:NO];
+            [self terminateAppTrap];
+            [self performSelector:@selector(restartWithNewVersion) withObject:nil afterDelay:5];
+        }
+    }];
+}
+
+- (void)checkBackgroundProcessVersion
+{
+    [[NSDistributedNotificationCenter defaultCenter] postNotificationName:ATApplicationSendVersionData
+                                                                   object:nil
+                                                                 userInfo:nil
+                                                       deliverImmediately:YES];
+}
+
+- (void)restartWithNewVersion
+{
+    [self launchAppTrap];
+    [restartingAppTrapIndicator stopAnimation:nil];
+    [restartingAppTrapTextField setHidden:YES];
+    [startStopButton setEnabled:YES];
 }
 
 - (void)updateStatus
 {
     if ([self appTrapIsRunning]) {
-        // Need to specify bundle because we're a prefpane
         [statusText setStringValue:NSLocalizedStringFromTableInBundle(@"Active", nil, [self bundle], @"")];
-        [statusText setTextColor:[NSColor blackColor]];
+        [statusText setTextColor:[NSColor labelColor]];
         [startStopButton setTitle:NSLocalizedStringFromTableInBundle(@"Stop AppTrap", nil, [self bundle], @"")];
-    }
-    else {
-        // Need to specify bundle because we're a prefpane
+    } else {
         [statusText setStringValue:NSLocalizedStringFromTableInBundle(@"Inactive", nil, [self bundle], @"")];
-        [statusText setTextColor:[NSColor grayColor]];
+        [statusText setTextColor:[NSColor secondaryLabelColor]];
         [startStopButton setTitle:NSLocalizedStringFromTableInBundle(@"Start AppTrap", nil, [self bundle], @"")];
     }
-    
-    // Extra check after five seconds in case the launch/termination was delayed
-    [self performSelector:@selector(updateStatus)
-			   withObject:nil
-			   afterDelay:5.0];
+
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateStatus) object:nil];
+    [self performSelector:@selector(updateStatus) withObject:nil afterDelay:5.0];
 }
 
 - (void)launchAppTrap
 {
-    // Try to launch AppTrap
-	NSLog(@"launching AppTrap");
-	NSURL *appURL = [NSURL fileURLWithPath:appPath];
+    NSLog(@"launching AppTrap");
+
+    if (appPath.length == 0) {
+        NSLog(@"Couldn't launch AppTrap: app path is missing");
+        return;
+    }
+
+    NSURL *appURL = [NSURL fileURLWithPath:appPath];
     NSWorkspaceOpenConfiguration *configuration = [NSWorkspaceOpenConfiguration configuration];
-    [configuration setAddsToRecentItems:NO];
-    [configuration setActivates:NO];
+    configuration.activates = NO;
+    configuration.addsToRecentItems = NO;
+
     [[NSWorkspace sharedWorkspace] openApplicationAtURL:appURL
                                           configuration:configuration
-                                      completionHandler:^(NSRunningApplication *application, NSError *error) {
+                                      completionHandler:^(NSRunningApplication * _Nullable app, NSError * _Nullable error) {
         if (error) {
             NSLog(@"Couldn't launch AppTrap: %@", error);
         }
@@ -178,151 +181,182 @@ static NSString *AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasake
 
 - (void)terminateAppTrap
 {
-	NSLog(@"terminating Apptrap");
-    NSDistributedNotificationCenter *nc = [NSDistributedNotificationCenter defaultCenter];
-    [nc postNotificationName:ATApplicationShouldTerminateNotification
-                      object:nil
-                    userInfo:nil
-          deliverImmediately:YES];
+    NSLog(@"terminating AppTrap");
+    [[NSDistributedNotificationCenter defaultCenter] postNotificationName:ATApplicationShouldTerminateNotification
+                                                                   object:nil
+                                                                 userInfo:nil
+                                                       deliverImmediately:YES];
 }
 
 - (BOOL)appTrapIsRunning
 {
-	id <NSFastEnumeration> applications = [NSRunningApplication runningApplicationsWithBundleIdentifier:AppTrapBackgroundBundleIdentifier];
-	for (NSRunningApplication *application in applications)
-	{
-		NSString *bundleIdentifier = application.bundleIdentifier;
-		if ([bundleIdentifier isEqualToString:AppTrapBackgroundBundleIdentifier])
-		{
-			return YES;
-		}
-	}
-	return NO;
-}
-
-#pragma mark -
-#pragma mark Update check
-
-- (id)updater {
-	return [ATSUUpdater sharedUpdater];
-}
-
-- (IBAction)automaticallyCheckForUpdate:(id)sender {
-	[[ATSUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:([sender state] == NSControlStateValueOn)];
-}
-
-- (IBAction)checkForUpdate:(id)sender {
-	[[ATSUUpdater sharedUpdater] checkForUpdates:sender];
-}
-
-#pragma mark -
-#pragma mark Login items
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
-- (void)updateStartOnLoginButton
-{
-    CFURLRef appPathURL = (__bridge CFURLRef)[NSURL fileURLWithPath:appPath];
-    LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
-    BOOL isInLoginItems = NO;
-    if (loginItems) {
-        isInLoginItems = [self inLoginItems:loginItems forPath:appPathURL];
-        CFRelease(loginItems);
+    NSArray<NSString *> *bundleIdentifiers = @[AppTrapBackgroundBundleIdentifier, AppTrapBackgroundBundleIdentifierOld];
+    for (NSString *bundleIdentifier in bundleIdentifiers) {
+        if ([NSRunningApplication runningApplicationsWithBundleIdentifier:bundleIdentifier].count > 0) {
+            return YES;
+        }
     }
-    [startOnLoginButton setState:isInLoginItems ? NSControlStateValueOn : NSControlStateValueOff];
+    return NO;
 }
-- (BOOL)inLoginItems:(LSSharedFileListRef)theLoginItemsRefs forPath:(CFURLRef)thePath
+
+#pragma mark - Update check
+
+- (IBAction)automaticallyCheckForUpdate:(id)sender
 {
-	if (!theLoginItemsRefs || !thePath) {
-		return NO;
-	}
-
-	UInt32 seedValue;
-	NSArray *loginItemsArray = (NSArray *)CFBridgingRelease(LSSharedFileListCopySnapshot(theLoginItemsRefs, &seedValue));
-	for (id item in loginItemsArray) {
-		LSSharedFileListItemRef itemRef = (__bridge LSSharedFileListItemRef)item;
-		CFURLRef itemURL = NULL;
-		if (LSSharedFileListItemResolve(itemRef, 0, &itemURL, NULL) == noErr && itemURL) {
-			NSString *itemPath = [(__bridge NSURL *)itemURL path];
-			CFRelease(itemURL);
-			if ([itemPath hasPrefix:appPath]) {
-				return YES;
-			}
-		}
-	}
-	
-	return NO;
+    if ([sender respondsToSelector:@selector(setState:)]) {
+        [sender setState:NSControlStateValueOff];
+    }
 }
 
-- (void)addToLoginItems:(LSSharedFileListRef )theLoginItemsRefs forPath:(CFURLRef)thePath
+- (IBAction)checkForUpdate:(id)sender
 {
-	if (!theLoginItemsRefs || !thePath) {
-		return;
-	}
-	LSSharedFileListItemRef item = LSSharedFileListInsertItemURL(theLoginItemsRefs, kLSSharedFileListItemLast, NULL, NULL, thePath, NULL, NULL);		
-	if (item) {
-		CFRelease(item);
-	}
+    NSBeep();
 }
 
-- (void)removeFromLoginItems:(LSSharedFileListRef )theLoginItemsRefs forPath:(CFURLRef)thePath
+#pragma mark - Login item via LaunchAgent
+
+- (NSString *)launchAgentPlistPath
 {
-	if (!theLoginItemsRefs || !thePath) {
-		return;
-	}
-
-	UInt32 seedValue;
-	NSArray *loginItemsArray = (NSArray *)CFBridgingRelease(LSSharedFileListCopySnapshot(theLoginItemsRefs, &seedValue));
-	for (id item in loginItemsArray) {
-		LSSharedFileListItemRef itemRef = (__bridge LSSharedFileListItemRef)item;
-		CFURLRef itemURL = NULL;
-		if (LSSharedFileListItemResolve(itemRef, 0, &itemURL, NULL) == noErr && itemURL) {
-			NSString *itemPath = [(__bridge NSURL *)itemURL path];
-			CFRelease(itemURL);
-			if ([itemPath hasPrefix:appPath]) {
-				LSSharedFileListItemRemove(theLoginItemsRefs, itemRef);
-			}
-		}
-	}
-	
+    NSArray<NSURL *> *urls = [[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory
+                                                                    inDomains:NSUserDomainMask];
+    NSURL *libraryURL = urls.firstObject;
+    return [[libraryURL URLByAppendingPathComponent:@"LaunchAgents" isDirectory:YES]
+            URLByAppendingPathComponent:AppTrapLaunchAgentFileName].path;
 }
 
-#pragma mark -
-#pragma mark Interface actions
+- (NSString *)launchctlGuiDomain
+{
+    return [NSString stringWithFormat:@"gui/%u", getuid()];
+}
+
+- (void)refreshStartOnLoginButton
+{
+    [startOnLoginButton setState:[self isStartOnLoginEnabled] ? NSControlStateValueOn : NSControlStateValueOff];
+}
+
+- (BOOL)isStartOnLoginEnabled
+{
+    NSString *plistPath = [self launchAgentPlistPath];
+    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    NSArray *programArguments = plist[@"ProgramArguments"];
+    NSString *configuredPath = programArguments.firstObject;
+
+    return [plist[@"Label"] isEqualToString:AppTrapLaunchAgentLabel]
+        && [configuredPath isEqualToString:appPath];
+}
+
+- (BOOL)writeLaunchAgentPlist
+{
+    if (appPath.length == 0) {
+        return NO;
+    }
+
+    NSString *plistPath = [self launchAgentPlistPath];
+    NSString *directoryPath = plistPath.stringByDeletingLastPathComponent;
+    NSError *error = nil;
+
+    BOOL createdDirectory = [[NSFileManager defaultManager] createDirectoryAtPath:directoryPath
+                                                      withIntermediateDirectories:YES
+                                                                       attributes:nil
+                                                                            error:&error];
+    if (!createdDirectory) {
+        NSLog(@"Couldn't create LaunchAgents directory: %@", error);
+        return NO;
+    }
+
+    NSDictionary *plist = @{
+        @"Label": AppTrapLaunchAgentLabel,
+        @"ProgramArguments": @[appPath],
+        @"RunAtLoad": @YES,
+        @"KeepAlive": @NO
+    };
+
+    NSData *data = [NSPropertyListSerialization dataWithPropertyList:plist
+                                                              format:NSPropertyListXMLFormat_v1_0
+                                                             options:0
+                                                               error:&error];
+    if (!data) {
+        NSLog(@"Couldn't serialize LaunchAgent plist: %@", error);
+        return NO;
+    }
+
+    BOOL wrotePlist = [data writeToFile:plistPath options:NSDataWritingAtomic error:&error];
+    if (!wrotePlist) {
+        NSLog(@"Couldn't write LaunchAgent plist: %@", error);
+        return NO;
+    }
+
+    return YES;
+}
+
+- (void)removeLaunchAgentPlist
+{
+    NSError *error = nil;
+    NSString *plistPath = [self launchAgentPlistPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:plistPath]) {
+        BOOL removed = [[NSFileManager defaultManager] removeItemAtPath:plistPath error:&error];
+        if (!removed) {
+            NSLog(@"Couldn't remove LaunchAgent plist: %@", error);
+        }
+    }
+}
+
+- (void)bootstrapLaunchAgentIfPossible
+{
+    [self bootoutLaunchAgentIfPossible];
+    [self runLaunchCtlWithArguments:@[@"bootstrap", [self launchctlGuiDomain], [self launchAgentPlistPath]]];
+}
+
+- (void)bootoutLaunchAgentIfPossible
+{
+    [self runLaunchCtlWithArguments:@[@"bootout", [self launchctlGuiDomain], [self launchAgentPlistPath]]];
+}
+
+- (BOOL)runLaunchCtlWithArguments:(NSArray<NSString *> *)arguments
+{
+    NSTask *task = [NSTask new];
+    task.executableURL = [NSURL fileURLWithPath:@"/bin/launchctl"];
+    task.arguments = arguments;
+
+    NSError *error = nil;
+    BOOL launched = [task launchAndReturnError:&error];
+    if (!launched) {
+        NSLog(@"launchctl failed to start: %@", error);
+        return NO;
+    }
+
+    [task waitUntilExit];
+    return task.terminationStatus == 0;
+}
+
+#pragma mark - Interface actions
 
 - (IBAction)startStopAppTrap:(id)sender
 {
-	
     if ([self appTrapIsRunning]) {
         [self terminateAppTrap];
     } else {
         [self launchAppTrap];
-	}
+    }
 }
 
 - (IBAction)startOnLogin:(id)sender
 {
-	CFURLRef appPathURL = (__bridge CFURLRef)[NSURL fileURLWithPath:appPath];
-	LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
-    if (!loginItems) {
-        return;
+    if ([sender state] == NSControlStateValueOn) {
+        if ([self writeLaunchAgentPlist]) {
+            [self bootstrapLaunchAgentIfPossible];
+        }
+    } else {
+        [self bootoutLaunchAgentIfPossible];
+        [self removeLaunchAgentPlist];
     }
 
-    if ([sender state] == NSControlStateValueOn) {
-        [self addToLoginItems:loginItems forPath:appPathURL];
-	} else {
-        [self removeFromLoginItems:loginItems forPath:appPathURL];
-	}
-	
-    CFRelease(loginItems);
+    [self refreshStartOnLoginButton];
 }
-
-#pragma clang diagnostic pop
 
 - (IBAction)visitWebsite:(id)sender
 {
-    NSURL *url = [NSURL URLWithString:@"http://onnati.net/apptrap/"];
+    NSURL *url = [NSURL URLWithString:@"https://github.com/kvijayan/AppTrap"];
     [[NSWorkspace sharedWorkspace] openURL:url];
 }
 

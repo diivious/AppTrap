@@ -130,29 +130,24 @@ static NSString *SandboxContainersFolderName = @"Containers";
 	// Kill the events watcher before we move stuff to the trash
 	[self.eventsWatcher stopWatching];
 	[self setEventsWatcher:nil];
-	
-	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-	NSString *emptyString = @"";
+
+	NSFileManager *fileManager = [NSFileManager defaultManager];
 	for (NSString *path in paths)
 	{
-		NSString *source = path.stringByDeletingLastPathComponent;
-		NSString *fileName = path.lastPathComponent;
-		NSInteger tag;
-		BOOL success = [workspace performFileOperation:NSWorkspaceRecycleOperation
-												source:source
-										   destination:emptyString
-												 files:@[fileName]
-												   tag:&tag];
+		NSURL *url = [NSURL fileURLWithPath:path];
+		NSURL *resultingURL = nil;
+		NSError *error = nil;
+		BOOL success = [fileManager trashItemAtURL:url resultingItemURL:&resultingURL error:&error];
 		if (success)
 		{
 			NSLog(@"Successfully moved %@ to trash", path);
 		}
 		else
 		{
-			NSLog(@"Couldn't move %@ to trash (tag = %d)", path, (int)tag);
+			NSLog(@"Couldn't move %@ to trash: %@", path, error);
 		}
 	}
-	
+
 	// Create a new events watcher to monitor the trash
 	APTFSEventsWatcher *watcher = [[APTFSEventsWatcher alloc] initWithDirectoryPath:self.pathToTrash];
 	[self setEventsWatcher:watcher];
@@ -162,11 +157,21 @@ static NSString *SandboxContainersFolderName = @"Containers";
 
 - (void)awokeFromSleep:(NSNotification*)notification
 {
-    NSTask *task = [NSTask new];
     NSString *launchPath = [[NSBundle mainBundle] pathForResource:@"RelaunchObjC" ofType:nil];
-    task.launchPath = launchPath;
+    if (launchPath.length == 0)
+    {
+        return;
+    }
+
+    NSTask *task = [NSTask new];
+    task.executableURL = [NSURL fileURLWithPath:launchPath];
     task.arguments = @[[NSString stringWithFormat:@"%d", [NSProcessInfo processInfo].processIdentifier]];
-    [task launch];
+
+    NSError *error = nil;
+    if (![task launchAndReturnError:&error])
+    {
+        NSLog(@"Couldn't relaunch after wake: %@", error);
+    }
 }
 
 #pragma mark - Core
@@ -337,7 +342,17 @@ static NSString *SandboxContainersFolderName = @"Containers";
 {
     NSLog(@"%s", __func__);
     NSLog(@"current directory contents: %@", self.currentDirectoryContents);
-    [NSApp activateIgnoringOtherApps:YES];
+    if (@available(macOS 14.0, *))
+    {
+        [NSApp activate];
+    }
+    else
+    {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        [NSApp activateIgnoringOtherApps:YES];
+#pragma clang diagnostic pop
+    }
     [NSApp runModalForWindow:self.window];
 }
 

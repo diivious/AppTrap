@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:AppTrap/AppTrap.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:AppTrapPreferencePane/AppTrapPreferencePane.xcodeproj">
    </FileRef>
 </Workspace>

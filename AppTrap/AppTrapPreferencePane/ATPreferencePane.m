@@ -24,14 +24,18 @@
 
 #import <unistd.h>
 
-static NSString *const AppTrapBackgroundBundleIdentifier = @"com.KumaranVijayan.AppTrap";
-static NSString *const AppTrapBackgroundBundleIdentifierOld = @"se.konstochvanligasaker.AppTrap";
-static NSString *const AppTrapLaunchAgentLabel = @"com.KumaranVijayan.AppTrap";
-static NSString *const AppTrapLaunchAgentFileName = @"com.KumaranVijayan.AppTrap.plist";
+static NSString *const AppTrapBackgroundBundleIdentifier = @"se.diivious.AppTrap";
+static NSString *const AppTrapBackgroundBundleIdentifierIntel = @"com.KumaranVijayan.AppTrap";
+static NSString *const AppTrapBackgroundBundleIdentifierOriginal = @"se.konstochvanligasaker.AppTrap";
+static NSString *const AppTrapLaunchAgentLabel = @"se.diivious.AppTrap";
+static NSString *const AppTrapLaunchAgentFileName = @"se.diivious.AppTrap.plist";
+static NSString *const AppTrapLaunchAgentFileNameIntel = @"com.KumaranVijayan.AppTrap.plist";
+static NSString *const AppTrapLaunchAgentFileNameOriginal = @"se.konstochvanligasaker.AppTrap.plist";
 
 @interface ATPreferencePane ()
 - (void)refreshStartOnLoginButton;
 - (BOOL)isStartOnLoginEnabled;
+- (void)migrateLegacyLaunchAgentIfNeeded;
 - (BOOL)writeLaunchAgentPlist;
 - (void)removeLaunchAgentPlist;
 - (void)bootstrapLaunchAgentIfPossible;
@@ -51,6 +55,7 @@ static NSString *const AppTrapLaunchAgentFileName = @"com.KumaranVijayan.AppTrap
     [automaticallyCheckForUpdate setState:NSControlStateValueOff];
     [automaticallyCheckForUpdate setEnabled:NO];
 
+    [self migrateLegacyLaunchAgentIfNeeded];
     [self refreshStartOnLoginButton];
 
     [aboutView readRTFDFromFile:[[self bundle] pathForResource:@"Read Me" ofType:@"rtf"]];
@@ -190,7 +195,7 @@ static NSString *const AppTrapLaunchAgentFileName = @"com.KumaranVijayan.AppTrap
 
 - (BOOL)appTrapIsRunning
 {
-    NSArray<NSString *> *bundleIdentifiers = @[AppTrapBackgroundBundleIdentifier, AppTrapBackgroundBundleIdentifierOld];
+    NSArray<NSString *> *bundleIdentifiers = @[AppTrapBackgroundBundleIdentifier, AppTrapBackgroundBundleIdentifierIntel, AppTrapBackgroundBundleIdentifierOriginal];
     for (NSString *bundleIdentifier in bundleIdentifiers) {
         if ([NSRunningApplication runningApplicationsWithBundleIdentifier:bundleIdentifier].count > 0) {
             return YES;
@@ -214,6 +219,52 @@ static NSString *const AppTrapLaunchAgentFileName = @"com.KumaranVijayan.AppTrap
 }
 
 #pragma mark - Login item via LaunchAgent
+
+- (void)migrateLegacyLaunchAgentIfNeeded
+{
+    NSString *currentPath = [self launchAgentPlistPath];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    if ([fileManager fileExistsAtPath:currentPath]) {
+        return;
+    }
+
+    NSArray<NSURL *> *urls = [fileManager URLsForDirectory:NSLibraryDirectory
+                                                 inDomains:NSUserDomainMask];
+    NSURL *launchAgentsURL = [urls.firstObject URLByAppendingPathComponent:@"LaunchAgents"
+                                                               isDirectory:YES];
+
+    NSArray<NSString *> *legacyFileNames = @[
+        AppTrapLaunchAgentFileNameIntel,
+        AppTrapLaunchAgentFileNameOriginal
+    ];
+
+    for (NSString *fileName in legacyFileNames) {
+        NSString *legacyPath = [launchAgentsURL URLByAppendingPathComponent:fileName].path;
+        if (![fileManager fileExistsAtPath:legacyPath]) {
+            continue;
+        }
+
+        NSDictionary *legacyPlist = [NSDictionary dictionaryWithContentsOfFile:legacyPath];
+        NSArray *programArguments = legacyPlist[@"ProgramArguments"];
+        if (programArguments.count == 0) {
+            continue;
+        }
+
+        [self runLaunchCtlWithArguments:@[@"bootout", [self launchctlGuiDomain], legacyPath]];
+
+        NSError *removeError = nil;
+        if (![fileManager removeItemAtPath:legacyPath error:&removeError]) {
+            NSLog(@"Couldn't remove legacy AppTrap LaunchAgent %@: %@", legacyPath, removeError);
+            return;
+        }
+
+        if ([self writeLaunchAgentPlist]) {
+            [self bootstrapLaunchAgentIfPossible];
+        }
+        return;
+    }
+}
 
 - (NSString *)launchAgentPlistPath
 {
@@ -356,7 +407,7 @@ static NSString *const AppTrapLaunchAgentFileName = @"com.KumaranVijayan.AppTrap
 
 - (IBAction)visitWebsite:(id)sender
 {
-    NSURL *url = [NSURL URLWithString:@"https://github.com/kvijayan/AppTrap"];
+    NSURL *url = [NSURL URLWithString:@"https://github.com/diivious/AppTrap"];
     [[NSWorkspace sharedWorkspace] openURL:url];
 }
 

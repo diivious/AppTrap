@@ -4,10 +4,9 @@
 //
 //  Created by Kumaran Vijayan on 2013-08-17.
 //
-//
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface AppTrapTests : SenTestCase
+@interface AppTrapTests : XCTestCase
 
 @end

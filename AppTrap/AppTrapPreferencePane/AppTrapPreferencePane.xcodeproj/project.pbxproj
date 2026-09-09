@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,6 +21,7 @@
 		8D202CEE0486D31800D8A456 /* AppTrapPreferencePane.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* AppTrapPreferencePane.tiff */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
+		A1F0C0012FAE000100000001 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1F0C0022FAE000100000001 /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,20 @@
 			remoteGlobalIDString = 8D1107320486CEB800E47090;
 			remoteInfo = AppTrap;
 		};
+		A1FE28AD2FAE38990080525F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D97B03E17A8A04900569109 /* AppTrap.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D02FA261C31D22600C6CAB4;
+			remoteInfo = RelaunchObjC;
+		};
+		A1F0D0012FAF000100000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D97B03E17A8A04900569109 /* AppTrap.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = AppTrap;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -76,10 +91,7 @@
 		287EF8D60C4F8C30002DB92D /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = nl; path = "nl.lproj/Read Me.rtf"; sourceTree = "<group>"; };
 		287EF9A50C4F8DED002DB92D /* ATNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ATNotifications.h; path = ../AppTrap/ATNotifications.h; sourceTree = SOURCE_ROOT; };
 		287EF9A60C4F8DED002DB92D /* ATNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ATNotifications.m; path = ../AppTrap/ATNotifications.m; sourceTree = SOURCE_ROOT; };
-		28A46DD10C43ED75007925EB /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		28F272BB0C3A233500B1604F /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = "English.lproj/Read Me.rtf"; sourceTree = "<group>"; };
 		32DBCFA20370C41700C91783 /* AppTrapPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppTrapPreferencePane_Prefix.pch; sourceTree = "<group>"; };
-		7D1051D5104A1FA900BAAF3F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AppTrapPreferencePane.xib; sourceTree = "<group>"; };
 		7D1051D7104A1FBC00BAAF3F /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/AppTrapPreferencePane.xib; sourceTree = "<group>"; };
 		7D18B1541128BC94003C260F /* pt */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7D18B1551128BCA8003C260F /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = pt; path = "pt.lproj/Read Me.rtf"; sourceTree = "<group>"; };
@@ -98,7 +110,6 @@
 		7D5CCF6D104C0CDC0026160F /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = fr; path = "fr.lproj/Read Me.rtf"; sourceTree = "<group>"; };
 		7D5CCF6E104C0CFF0026160F /* fr */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7D97B03E17A8A04900569109 /* AppTrap.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AppTrap.xcodeproj; path = ../AppTrap/AppTrap.xcodeproj; sourceTree = "<group>"; };
-		7D97B04317A8AC7500569109 /* AppTrap.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = AppTrap.app; sourceTree = "<group>"; };
 		7DA59D4310201A08002EBE1E /* ATVariables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ATVariables.h; path = ../AppTrap/ATVariables.h; sourceTree = SOURCE_ROOT; };
 		7DA59D4410201A08002EBE1E /* ATVariables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ATVariables.m; path = ../AppTrap/ATVariables.m; sourceTree = SOURCE_ROOT; };
 		7DB7FF031041C41300310F74 /* ATPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATPreferencePane.h; sourceTree = "<group>"; };
@@ -106,6 +117,10 @@
 		7DEB002610156A84001F11ED /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* AppTrap.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppTrap.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1F0C0022FAE000100000001 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		A1FE28B02FAE38FD0080525F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1FE28B12FAE38FD0080525F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = "en.lproj/Read Me.rtf"; sourceTree = "<group>"; };
+		A1FE28B22FAE39080080525F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AppTrapPreferencePane.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C040013D9D8001CA16C8 /* AppTrapPreferencePane.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AppTrapPreferencePane.tiff; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,6 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F0C0012FAE000100000001 /* XCTest.framework in Frameworks */,
 				7D252B9117C148B6008BBBB3 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,7 +151,6 @@
 		089C166AFE841209C02AAC07 /* AppTrapPreferencePane */ = {
 			isa = PBXGroup;
 			children = (
-				7D97B04317A8AC7500569109 /* AppTrap.app */,
 				7D97B03E17A8A04900569109 /* AppTrap.xcodeproj */,
 				08FB77AFFE84173DC02AAC07 /* Classes */,
 				32DBCFA10370C40200C91783 /* Other Sources */,
@@ -144,6 +159,7 @@
 				7D252B9617C148B6008BBBB3 /* PrefPaneTests */,
 				7D252B8D17C148B6008BBBB3 /* Frameworks */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
+				A1AF35373050CE9D00C35086 /* Recovered References */,
 			);
 			name = AppTrapPreferencePane;
 			sourceTree = "<group>";
@@ -261,10 +277,19 @@
 			isa = PBXGroup;
 			children = (
 				7D97B04E17A8B2E100569109 /* AppTrap.app */,
-				7D252BA517C148B6008BBBB3 /* AppTrapTests.octest */,
+				7D252BA517C148B6008BBBB3 /* AppTrapTests.xctest */,
 				7D87BA351BF68E1A00416611 /* Relaunch */,
+				A1FE28AE2FAE38990080525F /* RelaunchObjC */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A1AF35373050CE9D00C35086 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				A1F0C0022FAE000100000001 /* XCTest.framework */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -277,7 +302,6 @@
 				7D252B8717C148B6008BBBB3 /* Sources */,
 				7D252B8817C148B6008BBBB3 /* Frameworks */,
 				7D252B8917C148B6008BBBB3 /* Resources */,
-				7D252B8A17C148B6008BBBB3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -296,12 +320,12 @@
 				8D202CEC0486D31800D8A456 /* Resources */,
 				8D202CF00486D31800D8A456 /* Sources */,
 				8D202CF20486D31800D8A456 /* Frameworks */,
-				8D202CF50486D31800D8A456 /* Rez */,
 				7DEB0133180A515500180509 /* Copy AppTrap */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A1F0D0022FAF000100000001 /* AppTrap */,
 			);
 			name = AppTrap;
 			productInstallPath = "$(HOME)/Library/PreferencePanes";
@@ -315,18 +339,15 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastTestingUpgradeCheck = 0710;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2660;
 			};
 			buildConfigurationList = 1DBD214C08BA80EA00186707 /* Build configuration list for PBXProject "AppTrapPreferencePane" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
 				sv,
 				pl,
 				no,
@@ -343,6 +364,7 @@
 				ja,
 				pt,
 				en,
+				Base,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* AppTrapPreferencePane */;
 			projectDirPath = "";
@@ -361,10 +383,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		7D252BA517C148B6008BBBB3 /* AppTrapTests.octest */ = {
+		7D252BA517C148B6008BBBB3 /* AppTrapTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = AppTrapTests.octest;
+			path = AppTrapTests.xctest;
 			remoteRef = 7D252BA417C148B6008BBBB3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -380,6 +402,13 @@
 			fileType = wrapper.application;
 			path = AppTrap.app;
 			remoteRef = 7D97B04D17A8B2E100569109 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A1FE28AE2FAE38990080525F /* RelaunchObjC */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = RelaunchObjC;
+			remoteRef = A1FE28AD2FAE38990080525F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -405,32 +434,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXRezBuildPhase section */
-		8D202CF50486D31800D8A456 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXRezBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		7D252B8A17C148B6008BBBB3 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7D252B8717C148B6008BBBB3 /* Sources */ = {
@@ -459,16 +462,21 @@
 			target = 8D202CE80486D31800D8A456 /* AppTrap */;
 			targetProxy = 7D252BA717C148E1008BBBB3 /* PBXContainerItemProxy */;
 		};
+		A1F0D0022FAF000100000001 /* AppTrap */ = {
+			isa = PBXTargetDependency;
+			name = AppTrap;
+			targetProxy = A1F0D0012FAF000100000001 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		28A46D850C43E6CF007925EB /* Read Me.rtf */ = {
 			isa = PBXVariantGroup;
 			children = (
-				28F272BB0C3A233500B1604F /* English */,
 				287EF8D60C4F8C30002DB92D /* nl */,
 				7D5CCF6D104C0CDC0026160F /* fr */,
 				7D18B1551128BCA8003C260F /* pt */,
+				A1FE28B12FAE38FD0080525F /* en */,
 			);
 			name = "Read Me.rtf";
 			sourceTree = "<group>";
@@ -476,10 +484,10 @@
 		28A46DD50C43ED87007925EB /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				28A46DD10C43ED75007925EB /* English */,
 				287EF8B90C4F8A52002DB92D /* nl */,
 				7D5CCF6E104C0CFF0026160F /* fr */,
 				7D18B1541128BC94003C260F /* pt */,
+				A1FE28B02FAE38FD0080525F /* en */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -487,10 +495,10 @@
 		7D1051D4104A1FA900BAAF3F /* AppTrapPreferencePane.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				7D1051D5104A1FA900BAAF3F /* English */,
 				7D1051D7104A1FBC00BAAF3F /* nl */,
 				7D5CCF6C104C0CC40026160F /* fr */,
 				7D18B1561128BCB9003C260F /* pt */,
+				A1FE28B22FAE39080080525F /* Base */,
 			);
 			name = AppTrapPreferencePane.xib;
 			sourceTree = "<group>";
@@ -510,10 +518,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
@@ -526,10 +534,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AppTrapPreferencePane_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = se.diivious.AppTrap.prefpanel;
 				PRODUCT_NAME = AppTrap;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = prefPane;
@@ -540,9 +550,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
@@ -554,10 +564,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AppTrapPreferencePane_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = se.diivious.AppTrap.prefpanel;
 				PRODUCT_NAME = AppTrap;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = prefPane;
@@ -568,12 +580,41 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Debug;
 		};
@@ -581,18 +622,45 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Release;
 		};
 		7D252BA017C148B6008BBBB3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -604,6 +672,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 					"$(inherited)",
@@ -621,9 +690,11 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				INFOPLIST_FILE = "PrefPaneTests/PrefPaneTests-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.diivious.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -631,7 +702,6 @@
 		7D252BA117C148B6008BBBB3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -643,6 +713,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
@@ -654,8 +725,10 @@
 				GCC_PREFIX_HEADER = "PrefPaneTests/PrefPaneTests-Prefix.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				INFOPLIST_FILE = "PrefPaneTests/PrefPaneTests-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.diivious.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
