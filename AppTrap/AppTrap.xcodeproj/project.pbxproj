@@ -697,7 +697,7 @@
 				INFOPLIST_FILE = "AppTrapTests/AppTrapTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.KumaranVijayan.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "se.diivious.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AppTrap.app/Contents/MacOS/AppTrap";
 				WRAPPER_EXTENSION = xctest;
@@ -725,7 +725,7 @@
 				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				INFOPLIST_FILE = "AppTrapTests/AppTrapTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.KumaranVijayan.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "se.diivious.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AppTrap.app/Contents/MacOS/AppTrap";
 				WRAPPER_EXTENSION = xctest;
@@ -757,7 +757,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KumaranVijayan.AppTrap;
+				PRODUCT_BUNDLE_IDENTIFIER = se.diivious.AppTrap;
 				PRODUCT_NAME = AppTrap;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
@@ -788,7 +788,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KumaranVijayan.AppTrap;
+				PRODUCT_BUNDLE_IDENTIFIER = se.diivious.AppTrap;
 				PRODUCT_NAME = AppTrap;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;

@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2.3</string>
+	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>65</string>
+	<string>200</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
@@ -40,5 +40,7 @@
 	<string>KOVS</string>
 	<key>SmartCrashReports_EmailTicket</key>
 	<string>SCR-0AB11B9C98</string>
+	<key>CFBundleGetInfoString</key>
+	<string>AppTrap 2.0; Current Developer: Donnie Savage (@diivious); original project credits preserved; github.com/diivious/AppTrap</string>
 </dict>
 </plist>

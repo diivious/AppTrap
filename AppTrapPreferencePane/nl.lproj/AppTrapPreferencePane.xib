@@ -172,7 +172,7 @@
                                             <rect key="frame" x="14" y="97" width="148" height="32"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
-                                            <buttonCell key="cell" type="push" title="AppTrap website" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="233">
+                                            <buttonCell key="cell" type="push" title="AppTrap GitHub" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="233">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>

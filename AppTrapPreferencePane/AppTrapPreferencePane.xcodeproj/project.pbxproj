@@ -539,7 +539,7 @@
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KumaranVijayan.AppTrap.prefpanel;
+				PRODUCT_BUNDLE_IDENTIFIER = se.diivious.AppTrap.prefpanel;
 				PRODUCT_NAME = AppTrap;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = prefPane;
@@ -569,7 +569,7 @@
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KumaranVijayan.AppTrap.prefpanel;
+				PRODUCT_BUNDLE_IDENTIFIER = se.diivious.AppTrap.prefpanel;
 				PRODUCT_NAME = AppTrap;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = prefPane;
@@ -694,7 +694,7 @@
 				INFOPLIST_FILE = "PrefPaneTests/PrefPaneTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.KumaranVijayan.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "se.diivious.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -728,7 +728,7 @@
 				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				INFOPLIST_FILE = "PrefPaneTests/PrefPaneTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.KumaranVijayan.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "se.diivious.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

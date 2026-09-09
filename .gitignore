@@ -1,6 +1,23 @@
-xcuserdata/
-
-DerivedData/
-
-AppTrapPreferencePane/AppTrap.app
+# macOS
 .DS_Store
+
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+
+# Xcode build output
+DerivedData/
+build/
+
+# AppTrap generated release files
+/release/*
+!/release/*.dmg
+
+# Generated embedded build products
+AppTrapPreferencePane/AppTrap.app
+/release/Logs
+/release/SDKStatCaches.noindex
+/release/Build
+/release/Build/Products
+/release/Build/Products/Release

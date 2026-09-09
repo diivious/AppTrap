@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2.3</string>
+	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>65</string>
+	<string>200</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>NSHumanReadableCopyright</key>
@@ -34,5 +34,7 @@
 	<string>ATPreferencePane</string>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
+	<key>CFBundleGetInfoString</key>
+	<string>AppTrap 2.0; Current Developer: Donnie Savage (@diivious); original project credits preserved; github.com/diivious/AppTrap</string>
 </dict>
 </plist>
